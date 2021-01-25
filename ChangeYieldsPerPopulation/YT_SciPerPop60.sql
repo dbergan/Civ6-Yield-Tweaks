@@ -1,0 +1,1 @@
+UPDATE GlobalParameters SET Value = 60 WHERE Name = 'SCIENCE_PERCENTAGE_YIELD_PER_POP';
