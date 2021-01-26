@@ -4,12 +4,12 @@ SupportsSinglePlayer, SupportsLANMultiplayer, SupportsInternetMultiplayer, Suppo
 ChangeableAfterGameStart, ChangeableAfterPlayByCloudMatchCreate, SortIndex) VALUES 
 
 ('YT_SCIENCE_PER_POP', 'LOC_YT_SCIENCE_PER_POP_NAME', 'LOC_YT_SCIENCE_PER_POP_DESC', 
-'YTScienceRate', 30, 'Game', 'YT_SCIENCE_PER_POP', 'AdvancedOptions', 1, 0, 
+'YTScienceRate', 25, 'Game', 'YT_SCIENCE_PER_POP', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
 0, 0, 320),
 
 ('YT_CULTURE_PER_POP', 'LOC_YT_CULTURE_PER_POP_NAME', 'LOC_YT_CULTURE_PER_POP_DESC', 
-'YTCultureRate', 30, 'Game', 'YT_CULTURE_PER_POP', 'AdvancedOptions', 1, 0, 
+'YTCultureRate', 25, 'Game', 'YT_CULTURE_PER_POP', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
 0, 0, 321),
 

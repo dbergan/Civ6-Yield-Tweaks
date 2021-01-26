@@ -32,7 +32,7 @@ INSERT OR REPLACE INTO LocalizedText
 ('LOC_YT_SCIENCE_PER_POP_35_NAME', '0.35', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_40_NAME', '0.40', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_45_NAME', '0.45', 'en_US'),
-('LOC_YT_SCIENCE_PER_POP_50_NAME', '0.50 (default)', 'en_US'),
+('LOC_YT_SCIENCE_PER_POP_50_NAME', '0.50 (normal, unmodded value)', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_55_NAME', '0.55', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_60_NAME', '0.60', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_65_NAME', '0.65', 'en_US'),
@@ -44,7 +44,7 @@ INSERT OR REPLACE INTO LocalizedText
 ('LOC_YT_SCIENCE_PER_POP_35_DESC', 'Each population in each city creates 0.35 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_40_DESC', 'Each population in each city creates 0.40 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_45_DESC', 'Each population in each city creates 0.45 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
-('LOC_YT_SCIENCE_PER_POP_50_DESC', 'Each population in each city creates 0.50 [ICON_Science] (default){LOC_YT_MOD_NOTE}', 'en_US'),
+('LOC_YT_SCIENCE_PER_POP_50_DESC', 'Each population in each city creates 0.50 [ICON_Science] (normal, unmodded value){LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_55_DESC', 'Each population in each city creates 0.55 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_60_DESC', 'Each population in each city creates 0.60 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_SCIENCE_PER_POP_65_DESC', 'Each population in each city creates 0.65 [ICON_Science]{LOC_YT_MOD_NOTE}', 'en_US'),
@@ -54,10 +54,10 @@ INSERT OR REPLACE INTO LocalizedText
 ('LOC_YT_CULTURE_PER_POP_15_NAME', '0.15', 'en_US'),
 ('LOC_YT_CULTURE_PER_POP_20_NAME', '0.20', 'en_US'),
 ('LOC_YT_CULTURE_PER_POP_25_NAME', '0.25 (recommended)', 'en_US'),
-('LOC_YT_CULTURE_PER_POP_30_NAME', '0.30 (default)', 'en_US'),
+('LOC_YT_CULTURE_PER_POP_30_NAME', '0.30 (normal, unmodded value)', 'en_US'),
 ('LOC_YT_CULTURE_PER_POP_15_DESC', 'Each population in each city creates 0.15 [ICON_Culture]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_CULTURE_PER_POP_20_DESC', 'Each population in each city creates 0.20 [ICON_Culture]{LOC_YT_MOD_NOTE}', 'en_US'),
 ('LOC_YT_CULTURE_PER_POP_25_DESC', 'Each population in each city creates 0.25 [ICON_Culture] (recommended){LOC_YT_MOD_NOTE}', 'en_US'),
-('LOC_YT_CULTURE_PER_POP_30_DESC', 'Each population in each city creates 0.30 [ICON_Culture] (default){LOC_YT_MOD_NOTE}', 'en_US')
+('LOC_YT_CULTURE_PER_POP_30_DESC', 'Each population in each city creates 0.30 [ICON_Culture] (normal, unmodded value){LOC_YT_MOD_NOTE}', 'en_US')
 
  ;
