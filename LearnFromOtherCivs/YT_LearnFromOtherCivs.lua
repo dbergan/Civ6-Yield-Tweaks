@@ -1,106 +1,118 @@
+if not ExposedMembers.DB_YT then ExposedMembers.DB_YT = {} end
+local DB_YT = ExposedMembers.DB_YT
+
 function BoostLaggers(turn)
-	-- These are the crucial variables
-	-- x4.00 means that if 4 out of 4 opponents have this tech (and are doing everything they can to help us), our science gets +400%
-	-- If we just meet all the other civs (and none are helping us), our science gets +200%
-	local ScienceMultiplier = 4.00 ;
-	local CultureMultiplier = 4.00 ;
+	local LocalPlayerID = Game.GetLocalPlayer()
+	if (LocalPlayerID == PlayerTypes.NONE) then return nil end
 
+	local LocalPlayer = Players[LocalPlayerID]
+	local LocalPlayerDiplomacy = LocalPlayer:GetDiplomacy()
+	local LocalPlayerTechs = LocalPlayer:GetTechs()
+	local LocalPlayerCulture = LocalPlayer:GetCulture()
 
+	local LocalPlayersTechID = LocalPlayerTechs:GetResearchingTech()
+	local LocalScience = LocalPlayerTechs:GetScienceYield()
+	local LocalPlayersCivicID = LocalPlayerCulture:GetProgressingCivic()
+	local LocalCulture = LocalPlayerCulture:GetCultureYield()
+	
 
+	local LocalPlayerCulProgLeft = DB_YT.GetCivicLeft()
+	local LocalPlayerSciProgLeft = DB_YT.GetTechLeft()
+	LocalPlayerCulProgLeft = LocalPlayerCulProgLeft - LocalCulture
+	LocalPlayerSciProgLeft = LocalPlayerSciProgLeft - LocalScience
 
-	local LocalPlayerID = Game.GetLocalPlayer() ;
-	if (LocalPlayerID == PlayerTypes.NONE) then
-		return nil;
-	end
-	local LocalPlayer = Players[LocalPlayerID];
-	local LocalPlayerDiplomacy = LocalPlayer:GetDiplomacy();
-	local LocalPlayerTechs = LocalPlayer:GetTechs();
-	local LocalPlayerCulture = LocalPlayer:GetCulture();
+	local TotalScienceBonus = 0
+	local TotalCultureBonus = 0
 
+	local TechEncounters = {}
+	local CivicEncounters = {}
 
-	local LocalPlayersTechID = LocalPlayerTechs:GetResearchingTech() ;
-	local LocalScience = LocalPlayerTechs:GetScienceYield();
-
-	local LocalPlayersCivicID = LocalPlayerCulture:GetProgressingCivic() ;
-	local LocalCulture = LocalPlayerCulture:GetCultureYield();
-
-	local MaxEncounterPoints = PlayerManager.GetAliveMajorsCount() - 1 ;
-	MaxEncounterPoints = MaxEncounterPoints * 100 ;
-	local TechEncounterPoints = 0 ;
-	local CivicEncounterPoints = 0 ;
-
-	local tMajors = PlayerManager.GetAliveMajors();
-
-	for i, Opponent in ipairs(tMajors) do
-		local OpponentID = Opponent:GetID() ;
+	for _, Opponent in ipairs(PlayerManager.GetAliveMajors()) do
+		local OpponentID = Opponent:GetID()
 		if OpponentID ~= LocalPlayerID then
 			if LocalPlayerDiplomacy:HasMet(OpponentID) then
 				if Opponent:GetTechs():HasTech(LocalPlayersTechID) then
-					TechEncounterPoints = TechEncounterPoints + GetEncounterPoints(LocalPlayerDiplomacy, OpponentID) ;
+					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(OpponentID, "S") }
+					table.insert(TechEncounters, temp)
 				end
-
+				
 				if Opponent:GetCulture():HasCivic(LocalPlayersCivicID) then
-					CivicEncounterPoints = CivicEncounterPoints + GetEncounterPoints(LocalPlayerDiplomacy, OpponentID) ;
+					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(OpponentID, "C") }
+					table.insert(CivicEncounters, temp)
 				end 
 			end
 		end
 	end
 
-	local LocalScienceBonusMultiplier = ((TechEncounterPoints / MaxEncounterPoints)) * ScienceMultiplier ;
-	local LocalCultureBonusMultiplier = ((CivicEncounterPoints / MaxEncounterPoints)) * CultureMultiplier ;
-	local LocalScienceBonusYield = LocalScienceBonusMultiplier * LocalScience ;
-	local LocalCultureBonusYield = LocalCultureBonusMultiplier * LocalCulture ;
+	table.sort(TechEncounters, function(a,b) return a.EncounterPoints > b.EncounterPoints end)
+	table.sort(CivicEncounters, function(a,b) return a.EncounterPoints > b.EncounterPoints end)
+	local ScienceNotifications = {}
+	for i, Encounter in ipairs(TechEncounters) do
+		local ScienceBonus = LocalScience * Encounter.EncounterPoints / 100
+		ScienceBonus = ScienceBonus * (0.5 ^ (i - 1))
+		if LocalPlayerSciProgLeft <= 0 then
+			ScienceBonus = 0
+		elseif ScienceBonus > LocalPlayerSciProgLeft then
+			ScienceBonus = LocalPlayerSciProgLeft
+		end
+		TotalScienceBonus = TotalScienceBonus + ScienceBonus
+		LocalPlayerSciProgLeft = LocalPlayerSciProgLeft - ScienceBonus
 
-	local LocalPlayerSciProgLeft = LocalPlayerTechs:GetResearchCost(LocalPlayersTechID) - LocalPlayerTechs:GetResearchProgress(LocalPlayersTechID) ;
-
-	if (LocalScience + LocalScienceBonusYield) > LocalPlayerSciProgLeft then
-		if LocalScience > LocalPlayerSciProgLeft then
-			LocalScienceBonusYield = 0 ;
-		else
-			LocalScienceBonusYield = LocalPlayerSciProgLeft - LocalScience ;
+		if ScienceBonus > 0 then
+			local temp = { OpponentName = Encounter.OpponentName, Bonus = ScienceBonus }
+			table.insert(ScienceNotifications, temp)
 		end
 	end
-	LocalPlayerTechs:ChangeCurrentResearchProgress(LocalScienceBonusYield);
 
-
-	-- GetCulturalProgress() doesn't work here (it's a UI function only), so we have to clip in an inexact fashion... (WHY FIRAXIS, WHY!?)
-	-- local LocalPlayerCultProgLeft = LocalPlayerCulture:GetCultureCost(LocalPlayersCivicID) - LocalPlayerCulture:GetCulturalProgress(LocalPlayersCivicID) ;
-	local CivicTurnsLeft = LocalPlayerCulture:GetTurnsLeftOnCurrentCivic() ; -- LocalPlayersCivicID) ;
-
-	-- if there's <= 1 turn left, we don't apply any bonus because the normal yield will complete it and overflow
-	if CivicTurnsLeft > 1 then
-		local ProgressLeftMin = ((CivicTurnsLeft - 1) * LocalCulture) + 0.01 ;
-		local ProgressLeftMax = CivicTurnsLeft * LocalCulture ;
-		-- If we don't complete the civic even with all our bonus, then we'll receive the whole bonus
-		-- Here's where we have to decide how much bonus to receive if we're going to complete the civic with the bonus... we don't want excessive overflow
-		-- For now, I'm just going to clip to ProgressLeftMax, which will often create overflow, but not a lot
-		if (LocalCulture + LocalCultureBonusYield) > ProgressLeftMax then
-			LocalCultureBonusYield = ProgressLeftMax - LocalCulture ;
+	local CultureNotifications = {}
+	for i, Encounter in ipairs(CivicEncounters) do
+		local CultureBonus = LocalCulture * Encounter.EncounterPoints / 100
+		CultureBonus = CultureBonus * (0.5 ^ (i - 1))
+		if LocalPlayerCulProgLeft <= 0 then
+			CultureBonus = 0
+		elseif CultureBonus > LocalPlayerCulProgLeft then
+			CultureBonus = LocalPlayerCulProgLeft
 		end
-		LocalPlayerCulture:ChangeCurrentCulturalProgress(LocalCultureBonusYield);
+		TotalCultureBonus = TotalCultureBonus + CultureBonus
+		LocalPlayerCulProgLeft = LocalPlayerCulProgLeft - CultureBonus
+
+		if CultureBonus > 0 then
+			local temp = { OpponentName = Encounter.OpponentName, Bonus = CultureBonus }
+			table.insert(CultureNotifications, temp)
+		end
 	end
+
+	-- Add bonuses
+	LocalPlayerTechs:ChangeCurrentResearchProgress(TotalScienceBonus)
+	LocalPlayerCulture:ChangeCurrentCulturalProgress(TotalCultureBonus)
+
+	-- Send notifications
+	local Body = ""
+	for _, Notif in ipairs(ScienceNotifications) do
+		if Body ~= "" then
+			Body = Body .. "[NEWLINE]"
+		end
+		Body = Body .. string.format("%.1f", Notif.Bonus) .. "[ICON_Science] from {LOC_" .. Notif.OpponentName .. "_NAME}"
+	end
+	if Body ~= "" then
+		DB_YT.SendNotification("Learn From Other Civs", Body, "S")
+	end
+
+	Body = ""
+	for _, Notif in ipairs(CultureNotifications) do
+		if Body ~= "" then
+			Body = Body .. "[NEWLINE]"
+		end
+		Body = Body .. string.format("%.1f", Notif.Bonus) .. "[ICON_Culture] from {LOC_" .. Notif.OpponentName .. "_NAME}"
+	end
+	if Body ~= "" then
+		DB_YT.SendNotification("Learn From Other Civs", Body, "C")
+	end
+
 end
-
-
-
-
--- EncounterPoints: a 0-100 scale assessing how much the opponent is sharing the details of this tech
--- 0 means we haven't met them
--- 100 means they are doing everything possible to share with us
--- Just knowing that a tech exists (seen them use gunpowder, for example) is worth the most
--- ...
--- I planned to have a lot of other nuances in here (declared friend, open borders, defensive pact, joint war, alliance level) but apparently we don't have access to that knowledge on the gameplay script side (WHY FIRAXIS, WHY!?)
--- Thus, it's just "have we met them?" and diplomatic visibility
-function GetEncounterPoints(LocalPlayerDiplomacy, OpponentID)
-	local EncounterPoints = 50 ; -- start at 50 for having met them and knowing the tech exists (e.g. saw gunpowder for the first time)
-	EncounterPoints = EncounterPoints + (12.5 * LocalPlayerDiplomacy:GetVisibilityOn(OpponentID)) ; -- 12.5 points for each level of visibility (subsumes any seperate need for bonuses re: traders, delegations, embassies, spy listening posts, alliance level 1, printing press, and Catherine de Medici)
-	return EncounterPoints ;
-end
-
-
 
 function Init()
-	Events.TurnEnd.Add( BoostLaggers );
+	Events.TurnEnd.Add( BoostLaggers )
 end
 
-Init();
+Init()
