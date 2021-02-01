@@ -1086,35 +1086,37 @@ function PopulateNode(uiNode, playerTechData)
 	end
 
 -- DB
-	if YT_MarkerIM[uiNode.Type] == nil then
-		YT_MarkerIM[uiNode.Type] = InstanceManager:new( "PlayerMarkerInstance", "Top",	 uiNode.NameStack)
-	end
-	YT_MarkerIM[uiNode.Type]:ResetInstances()
-	local AllPlayers = PlayerManager.GetAliveMajors()
-	for _, Player in pairs(AllPlayers) do
-		local PlayerID = Player:GetID() 
-		local LocalPlayerID = Game.GetLocalPlayer()
-		local IsNotLocalPlayer = PlayerID ~= LocalPlayerID
-		local HasMet = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[PlayerID].HasMet
-		local HasTech = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[PlayerID][uiNode.Type] ~= nil
-		local LocalDoesntHaveTech = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[LocalPlayerID][uiNode.Type] == nil
+	if GameConfiguration.GetValue("YT_LEARN_FROM_OTHER_CIVS") ~= nil and GameConfiguration.GetValue("YT_LEARN_FROM_OTHER_CIVS") == true then
+		if YT_MarkerIM[uiNode.Type] == nil then
+			YT_MarkerIM[uiNode.Type] = InstanceManager:new( "PlayerMarkerInstance", "Top",	 uiNode.NameStack)
+		end
+		YT_MarkerIM[uiNode.Type]:ResetInstances()
+		local AllPlayers = PlayerManager.GetAliveMajors()
+		for _, Player in pairs(AllPlayers) do
+			local PlayerID = Player:GetID() 
+			local LocalPlayerID = Game.GetLocalPlayer()
+			local IsNotLocalPlayer = PlayerID ~= LocalPlayerID
+			local HasMet = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[PlayerID].HasMet
+			local HasTech = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[PlayerID][uiNode.Type] ~= nil
+			local LocalDoesntHaveTech = m_kCurrentData[DATA_FIELD_PLAYERINFO].Stats[LocalPlayerID][uiNode.Type] == nil
 
-		if IsNotLocalPlayer and LocalDoesntHaveTech and HasMet and HasTech then
-			local pPlayerConfig =  PlayerConfigurations[PlayerID]
-			local instance = YT_MarkerIM[uiNode.Type]:GetInstance()
-			instance.Portrait:SetHide(false)
-			local iconName = "ICON_" .. pPlayerConfig:GetLeaderTypeName()
-			local textureOffsetX, textureOffsetY, textureSheet = IconManager:FindIconAtlas(iconName)
-			instance.Portrait:SetTexture(textureOffsetX, textureOffsetY, textureSheet)
+			if IsNotLocalPlayer and LocalDoesntHaveTech and HasMet and HasTech then
+				local pPlayerConfig =  PlayerConfigurations[PlayerID]
+				local instance = YT_MarkerIM[uiNode.Type]:GetInstance()
+				instance.Portrait:SetHide(false)
+				local iconName = "ICON_" .. pPlayerConfig:GetLeaderTypeName()
+				local textureOffsetX, textureOffsetY, textureSheet = IconManager:FindIconAtlas(iconName)
+				instance.Portrait:SetTexture(textureOffsetX, textureOffsetY, textureSheet)
 
-			instance.Marker:SetSizeVal(15, 15)
-			instance.Marker:SetToolTipString(Locale.Lookup("{LOC_" .. pPlayerConfig:GetCivilizationTypeName() .. "_NAME}"))
+				instance.Marker:SetSizeVal(15, 15)
+				instance.Marker:SetToolTipString(Locale.Lookup("{LOC_" .. pPlayerConfig:GetCivilizationTypeName() .. "_NAME}"))
 
-			instance.Num:SetHide(true)
-			instance.TurnGrid:SetHide(true)
-			instance.TurnLabel:SetText("")
+				instance.Num:SetHide(true)
+				instance.TurnGrid:SetHide(true)
+				instance.TurnLabel:SetText("")
 
-			instance.Top:SetOffsetVal(24, 12)
+				instance.Top:SetOffsetVal(24, 12)
+			end
 		end
 	end
 -- /DB
@@ -1206,6 +1208,14 @@ function View( playerTechData:table )
 			local markerPercent :number = math.clamp( markerStat.HighestColumn / m_maxColumns, 0, 1 );
 			local markerX		:number = MARKER_OFFSET_START + (markerPercent * m_scrollWidth );
 			instance.Top:SetOffsetVal(markerX ,0);
+-- DB
+			if GameConfiguration.GetValue("YT_LEARN_FROM_OTHER_CIVS") == nil or GameConfiguration.GetValue("YT_LEARN_FROM_OTHER_CIVS") == false then
+				if GameConfiguration.GetValue("BM_REMOVE_FOREIGN_INFO") ~= nil and GameConfiguration.GetValue("BM_REMOVE_FOREIGN_INFO") == true then
+					instance.Marker:SetHide(true)
+					instance.TurnGrid:SetHide(true)
+				end
+			end
+-- /DB
 		end
 	end
 	
@@ -1899,9 +1909,13 @@ end
 --	filterFunc,		The funciton filter to apply to each node as it's built,
 --					nil will reset the filters to none.
 -- ===========================================================================
-function OnFilterClicked( filter )		  
-	m_kCurrentData[DATA_FIELD_UIOPTIONS].filter = filter;
-	View( m_kCurrentData )
+function OnFilterClicked( filter )
+-- DB
+	if GameConfiguration.GetValue("GAMEMODE_TREE_RANDOMIZER") == nil or GameConfiguration.GetValue("GAMEMODE_TREE_RANDOMIZER") == false then
+		m_kCurrentData[DATA_FIELD_UIOPTIONS].filter = filter;
+		View( m_kCurrentData )
+	end
+-- /DB
 end
 
 -- ===========================================================================

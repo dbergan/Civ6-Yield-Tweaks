@@ -104,7 +104,7 @@ function YT_GiveActivePlayerBoost(ActivePlayerID)
 		Body = Body .. string.format("%.1f", Notif.Bonus) .. "[ICON_Culture] from {LOC_" .. Notif.OpponentName .. "_NAME}"
 	end
 	if Body ~= "" then
-		DB_YT.SendNotification(ActivePlayerID, "Learn From Other Civs, Begin", Body, "C")
+		DB_YT.SendNotification(ActivePlayerID, "Learn From Other Civs", Body, "C")
 	end
 
 end

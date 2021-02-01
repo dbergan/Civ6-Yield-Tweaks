@@ -43,7 +43,7 @@ function GetEncounterPoints(ActivePlayerID, OpponentID, SciOrCulture)		-- SciOrC
 		local AllianceLevel = ActivePlayerDiplomacy:GetAllianceLevel(OpponentID)
 		local AlliancePoints = 20 + (10 * AllianceLevel)											-- 30/40/50 for level 1, 2, 3 alliance
 		if (SciOrCulture == "S" and GameInfo.Alliances[AllianceType].AllianceType == "ALLIANCE_RESEARCH") or (SciOrCulture == "C" and GameInfo.Alliances[AllianceType].AllianceType == "ALLIANCE_CULTURAL") then
-			AlliancePoints = AlliancePoints * 2														-- alliance points worth double (60/80/100) if the alliance type matches
+			AlliancePoints = AlliancePoints * 2														-- alliance points worth double (60/80/100) when the alliance type matches
 		end
 		EncounterPoints = EncounterPoints + AlliancePoints
 	else
