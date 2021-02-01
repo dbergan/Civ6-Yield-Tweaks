@@ -1,25 +1,23 @@
 if not ExposedMembers.DB_YT then ExposedMembers.DB_YT = {} end
 local DB_YT = ExposedMembers.DB_YT
 
-function BoostLaggers(turn)
-	local LocalPlayerID = Game.GetLocalPlayer()
-	if (LocalPlayerID == PlayerTypes.NONE) then return nil end
+-- this function triggers immediately after the player received their normal science/culture yields for the turn
+function YT_GiveActivePlayerBoost(ActivePlayerID)
+	if (ActivePlayerID == PlayerTypes.NONE or ActivePlayerID > 61) then return nil end
 
-	local LocalPlayer = Players[LocalPlayerID]
-	local LocalPlayerDiplomacy = LocalPlayer:GetDiplomacy()
-	local LocalPlayerTechs = LocalPlayer:GetTechs()
-	local LocalPlayerCulture = LocalPlayer:GetCulture()
+	local ActivePlayer = Players[ActivePlayerID]
+	local ActivePlayerDiplomacy = ActivePlayer:GetDiplomacy()
+	local ActivePlayerTechs = ActivePlayer:GetTechs()
+	local ActivePlayerCulture = ActivePlayer:GetCulture()
 
-	local LocalPlayersTechID = LocalPlayerTechs:GetResearchingTech()
-	local LocalScience = LocalPlayerTechs:GetScienceYield()
-	local LocalPlayersCivicID = LocalPlayerCulture:GetProgressingCivic()
-	local LocalCulture = LocalPlayerCulture:GetCultureYield()
+	local ActivePlayersTechID = ActivePlayerTechs:GetResearchingTech()
+	local ActiveScience = ActivePlayerTechs:GetScienceYield()
+	local ActivePlayersCivicID = ActivePlayerCulture:GetProgressingCivic()
+	local ActiveCulture = ActivePlayerCulture:GetCultureYield()
 	
 
-	local LocalPlayerCulProgLeft = DB_YT.GetCivicLeft()
-	local LocalPlayerSciProgLeft = DB_YT.GetTechLeft()
-	LocalPlayerCulProgLeft = LocalPlayerCulProgLeft - LocalCulture
-	LocalPlayerSciProgLeft = LocalPlayerSciProgLeft - LocalScience
+	local ActivePlayerCulProgLeft = DB_YT.GetCivicLeft(ActivePlayerID)
+	local ActivePlayerSciProgLeft = DB_YT.GetTechLeft(ActivePlayerID)
 
 	local TotalScienceBonus = 0
 	local TotalCultureBonus = 0
@@ -29,15 +27,15 @@ function BoostLaggers(turn)
 
 	for _, Opponent in ipairs(PlayerManager.GetAliveMajors()) do
 		local OpponentID = Opponent:GetID()
-		if OpponentID ~= LocalPlayerID then
-			if LocalPlayerDiplomacy:HasMet(OpponentID) then
-				if Opponent:GetTechs():HasTech(LocalPlayersTechID) then
-					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(OpponentID, "S") }
+		if OpponentID ~= ActivePlayerID then
+			if ActivePlayerDiplomacy:HasMet(OpponentID) then
+				if Opponent:GetTechs():HasTech(ActivePlayersTechID) then
+					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(ActivePlayerID, OpponentID, "S") }
 					table.insert(TechEncounters, temp)
 				end
 				
-				if Opponent:GetCulture():HasCivic(LocalPlayersCivicID) then
-					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(OpponentID, "C") }
+				if Opponent:GetCulture():HasCivic(ActivePlayersCivicID) then
+					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = DB_YT.GetEncounterPoints(ActivePlayerID, OpponentID, "C") }
 					table.insert(CivicEncounters, temp)
 				end 
 			end
@@ -48,15 +46,15 @@ function BoostLaggers(turn)
 	table.sort(CivicEncounters, function(a,b) return a.EncounterPoints > b.EncounterPoints end)
 	local ScienceNotifications = {}
 	for i, Encounter in ipairs(TechEncounters) do
-		local ScienceBonus = LocalScience * Encounter.EncounterPoints / 100
+		local ScienceBonus = ActiveScience * Encounter.EncounterPoints / 100
 		ScienceBonus = ScienceBonus * (0.5 ^ (i - 1))
-		if LocalPlayerSciProgLeft <= 0 then
+		if ActivePlayerSciProgLeft <= 0 then
 			ScienceBonus = 0
-		elseif ScienceBonus > LocalPlayerSciProgLeft then
-			ScienceBonus = LocalPlayerSciProgLeft
+		elseif ScienceBonus > ActivePlayerSciProgLeft then
+			ScienceBonus = ActivePlayerSciProgLeft
 		end
 		TotalScienceBonus = TotalScienceBonus + ScienceBonus
-		LocalPlayerSciProgLeft = LocalPlayerSciProgLeft - ScienceBonus
+		ActivePlayerSciProgLeft = ActivePlayerSciProgLeft - ScienceBonus
 
 		if ScienceBonus > 0 then
 			local temp = { OpponentName = Encounter.OpponentName, Bonus = ScienceBonus }
@@ -66,15 +64,15 @@ function BoostLaggers(turn)
 
 	local CultureNotifications = {}
 	for i, Encounter in ipairs(CivicEncounters) do
-		local CultureBonus = LocalCulture * Encounter.EncounterPoints / 100
+		local CultureBonus = ActiveCulture * Encounter.EncounterPoints / 100
 		CultureBonus = CultureBonus * (0.5 ^ (i - 1))
-		if LocalPlayerCulProgLeft <= 0 then
+		if ActivePlayerCulProgLeft <= 0 then
 			CultureBonus = 0
-		elseif CultureBonus > LocalPlayerCulProgLeft then
-			CultureBonus = LocalPlayerCulProgLeft
+		elseif CultureBonus > ActivePlayerCulProgLeft then
+			CultureBonus = ActivePlayerCulProgLeft
 		end
 		TotalCultureBonus = TotalCultureBonus + CultureBonus
-		LocalPlayerCulProgLeft = LocalPlayerCulProgLeft - CultureBonus
+		ActivePlayerCulProgLeft = ActivePlayerCulProgLeft - CultureBonus
 
 		if CultureBonus > 0 then
 			local temp = { OpponentName = Encounter.OpponentName, Bonus = CultureBonus }
@@ -83,8 +81,8 @@ function BoostLaggers(turn)
 	end
 
 	-- Add bonuses
-	LocalPlayerTechs:ChangeCurrentResearchProgress(TotalScienceBonus)
-	LocalPlayerCulture:ChangeCurrentCulturalProgress(TotalCultureBonus)
+	ActivePlayerTechs:ChangeCurrentResearchProgress(TotalScienceBonus)
+	ActivePlayerCulture:ChangeCurrentCulturalProgress(TotalCultureBonus)
 
 	-- Send notifications
 	local Body = ""
@@ -95,7 +93,7 @@ function BoostLaggers(turn)
 		Body = Body .. string.format("%.1f", Notif.Bonus) .. "[ICON_Science] from {LOC_" .. Notif.OpponentName .. "_NAME}"
 	end
 	if Body ~= "" then
-		DB_YT.SendNotification("Learn From Other Civs", Body, "S")
+		DB_YT.SendNotification(ActivePlayerID, "Learn From Other Civs", Body, "S")
 	end
 
 	Body = ""
@@ -106,13 +104,14 @@ function BoostLaggers(turn)
 		Body = Body .. string.format("%.1f", Notif.Bonus) .. "[ICON_Culture] from {LOC_" .. Notif.OpponentName .. "_NAME}"
 	end
 	if Body ~= "" then
-		DB_YT.SendNotification("Learn From Other Civs", Body, "C")
+		DB_YT.SendNotification(ActivePlayerID, "Learn From Other Civs, Begin", Body, "C")
 	end
 
 end
 
+
 function Init()
-	Events.TurnEnd.Add( BoostLaggers )
+	Events.PlayerTurnActivated.Add (YT_GiveActivePlayerBoost)
 end
 
 Init()
