@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\Base\Assets\UI\Screens\CivicsTree.xml -->
+
 <Context xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\..\..\..\..\CivTech\Libs\ForgeUI\ForgeUI_Assets\Controls.xsd">
+<!-- DB -->
+	<Include File="YT_LFOC_LeaderIcon" />
+<!-- /DB -->
 
 	<Include File="CivicUnlockIcon"/>
 
@@ -199,7 +204,7 @@
 
 
 	<!-- ================================================================= -->
-	<!--	INSTANCES																												 -->
+	<!--	INSTANCES													   -->
 	<!-- ================================================================= -->
 
 	<!-- Most important part of the tree, the actual nodes of content. -->
@@ -212,7 +217,9 @@
 				<Grid ID="BoostedBack" Offset="7,6" Anchor="L,B" Size="406,39" Texture="Controls_BoostSlotCivic" SliceCorner="28,26" SliceSize="1,1" SliceTextureSize="39,39"/>
 				<Image ID="BoostIcon" Offset="9,7" Anchor="L,B" Texture="BoostTech"/>
 				<Label ID="BoostText" Offset="47,7" Anchor="L,B" Style="TreeBoostText" String="?BoostText"/>
-				<Stack ID="NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4">
+<!-- DB -->
+				<Stack ID="DB_NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4">
+<!-- /DB -->
 					<Label ID="NodeName" Style="TreeNodeText" String="?NodeName" TruncateWidth="260"/>
 					<Image ID="RecommendedIcon" Offset="0,-8" Size="22,22" Texture="AdvisorRec22" ConsumeMouse="1" ToolTip="LOC_TECH_FILTER_RECOMMENDED">
 						<FlipAnim Texture="AdvisorRecAnim22" Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
@@ -361,5 +368,6 @@
 			</Image>
 		</Container>
 	</Instance>
+
 
 </Context>

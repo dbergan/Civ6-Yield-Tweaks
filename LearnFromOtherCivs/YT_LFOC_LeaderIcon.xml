@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context>
+	<Instance Name="YT_LFOC_LeaderIconInstance">
+		<Image ID="Icon" Size="32,32" Offset="-5,-37" Anchor="C,C" Texture="TimelineLeaders" />
+	</Instance>
+</Context>
+
+<!-- 
+<Include File="YT_LFOC_LeaderIcon"/> 
+-->

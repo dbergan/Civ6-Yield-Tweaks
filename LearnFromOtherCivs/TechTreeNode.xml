@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\DLC\Expansion2\UI\Replacements\TechTreeNode.xml -->
 <!-- To Use: <Include File="TechTreeNode"/> -->
 
 <Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\..\..\..\..\CivTech\Libs\ForgeUI\ForgeUI_Assets\Controls.xsd">
+<!-- DB -->
+	<Include File="YT_LFOC_LeaderIcon"/>
+<!-- /DB -->
 
 	<Instance					Name="NodeInstance">
 		<Container			ID="Top"																						Size="370,1">
@@ -12,7 +16,9 @@
 				<Grid				ID="BoostedBack"		Anchor="L,B"		Offset="7,6"		Size="357,39" Texture="Controls_BoostSlotTech" SliceCorner="28,26" SliceSize="1,1" SliceTextureSize="39,39"/>
 				<Image			ID="BoostIcon"			Anchor="L,B"		Offset="10,7"									Texture="BoostTech"/>
 				<Label			ID="BoostText"			Anchor="L,B"		Offset="42,7" Style="TreeBoostText" String="?BoostText"/>
-				<Stack ID="NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4" >
+<!-- DB -->
+				<Stack ID="DB_NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4" >
+<!-- /DB -->
 					<Label		ID="NodeName" Style="TreeNodeText"	String="?NodeName"/>
 					<Image		ID="RecommendedIcon"								Offset="0,-8" Size="22,22" Texture="AdvisorRec22" ConsumeMouse="1" ToolTip="LOC_TECH_FILTER_RECOMMENDED">
 						<FlipAnim Texture="AdvisorRecAnim22" Anchor="C,C" Size="26,26" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
