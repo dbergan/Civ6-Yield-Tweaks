@@ -3,43 +3,72 @@ Domain, DefaultValue, ConfigurationGroup, ConfigurationId, GroupId, Visible, Rea
 SupportsSinglePlayer, SupportsLANMultiplayer, SupportsInternetMultiplayer, SupportsHotSeat, SupportsPlayByCloud,
 ChangeableAfterGameStart, ChangeableAfterPlayByCloudMatchCreate, SortIndex) VALUES 
 
+('YT_HEADER', 'LOC_YT_HEADER_NAME', 'LOC_YT_HEADER_DESC', 
+'EmptyDomain', 1, 'Game', 'YT_HEADER', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 320),
+
 ('YT_SCIENCE_PER_POP', 'LOC_YT_SCIENCE_PER_POP_NAME', 'LOC_YT_SCIENCE_PER_POP_DESC', 
 'YTScienceRate', 25, 'Game', 'YT_SCIENCE_PER_POP', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 320),
+0, 0, 321),
 
 ('YT_CULTURE_PER_POP', 'LOC_YT_CULTURE_PER_POP_NAME', 'LOC_YT_CULTURE_PER_POP_DESC', 
 'YTCultureRate', 25, 'Game', 'YT_CULTURE_PER_POP', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 321),
-
+0, 0, 322),
 
 ('YT_REMOVE_TECH_BOOSTS', 'LOC_YT_REMOVE_TECH_BOOSTS_NAME', 'LOC_YT_REMOVE_TECH_BOOSTS_DESC', 
 'bool', 1, 'Game', 'YT_REMOVE_TECH_BOOSTS', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 322),
+0, 0, 323),
 
 ('YT_REMOVE_CIVIC_BOOSTS', 'LOC_YT_REMOVE_CIVIC_BOOSTS_NAME', 'LOC_YT_REMOVE_CIVIC_BOOSTS_DESC', 
 'bool', 1, 'Game', 'YT_REMOVE_CIVIC_BOOSTS', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 323),
+0, 0, 324),
 
 ('YT_LEARN_FROM_OTHER_CIVS', 'LOC_YT_LEARN_FROM_OTHER_CIVS_NAME', 'LOC_YT_LEARN_FROM_OTHER_CIVS_DESC', 
 'bool', 1, 'Game', 'YT_LEARN_FROM_OTHER_CIVS', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 324),
+0, 0, 325),
 
 ('YT_PEOPLE_CREATE', 'LOC_YT_PEOPLE_CREATE_NAME', 'LOC_YT_PEOPLE_CREATE_DESC', 
 'bool', 1, 'Game', 'YT_PEOPLE_CREATE', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 325),
+0, 0, 326),
 
 ('YT_GREAT_PEOPLE_COME_FROM_PEOPLE', 'LOC_YT_GREAT_PEOPLE_COME_FROM_PEOPLE_NAME', 'LOC_YT_GREAT_PEOPLE_COME_FROM_PEOPLE_DESC', 
 'bool', 1, 'Game', 'YT_GREAT_PEOPLE_COME_FROM_PEOPLE', 'AdvancedOptions', 1, 0, 
 1, 1, 1, 1, 1, 
-0, 0, 326)
+0, 0, 327),
 
-;
+('YT_MONUMENTS_NO_CULTURE', 'LOC_YT_MONUMENTS_NO_CULTURE_NAME', 'LOC_YT_MONUMENTS_NO_CULTURE_DESC', 
+'bool', 1, 'Game', 'YT_MONUMENTS_NO_CULTURE', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 328),
+
+('YT_THEATER_SQUARE_BETTER_ADJACENCIES', 'LOC_YT_THEATER_SQUARE_BETTER_ADJACENCIES_NAME', 'LOC_YT_THEATER_SQUARE_BETTER_ADJACENCIES_DESC', 
+'bool', 1, 'Game', 'YT_THEATER_SQUARE_BETTER_ADJACENCIES', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 329),
+
+('YT_GOLD_FROM_TOURISM', 'LOC_YT_GOLD_FROM_TOURISM_NAME', 'LOC_YT_GOLD_FROM_TOURISM_DESC', 
+'bool', 1, 'Game', 'YT_GOLD_FROM_TOURISM', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 330),
+
+('YT_GREAT_MERCHANTS_GRANT_TRADER', 'LOC_YT_GREAT_MERCHANTS_GRANT_TRADER_NAME', 'LOC_YT_GREAT_MERCHANTS_GRANT_TRADER_DESC', 
+'bool', 1, 'Game', 'YT_GREAT_MERCHANTS_GRANT_TRADER', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 331),
+
+('DB_FOOTER', 'LOC_DB_FOOTER_NAME', 'LOC_DB_FOOTER_DESC', 
+'EmptyDomain', 1, 'Game', 'DB_FOOTER', 'AdvancedOptions', 1, 0, 
+1, 1, 1, 1, 1, 
+0, 0, 380) ;
+
+
 
 INSERT OR REPLACE INTO DomainValues (Domain, Name, Description, SortIndex, Value) VALUES
 ('YTScienceRate', 'LOC_YT_SCIENCE_PER_POP_15_NAME', 'LOC_YT_SCIENCE_PER_POP_15_DESC', 15, 15),
@@ -61,3 +90,6 @@ INSERT OR REPLACE INTO DomainValues (Domain, Name, Description, SortIndex, Value
 ('YTCultureRate', 'LOC_YT_CULTURE_PER_POP_30_NAME', 'LOC_YT_CULTURE_PER_POP_30_DESC', 30, 30)
 
 ;
+
+INSERT OR REPLACE INTO DomainRanges (Domain, MinimumValue, MaximumValue) VALUES
+('EmptyDomain', 0, 1) ;

@@ -13,7 +13,13 @@ INSERT INTO BNP_Building_Yield (BuildingType, DistrictType, YieldType)
 DELETE FROM BNP_Building_Yield WHERE YieldType = 'YIELD_PRODUCTION' AND (BuildingType = 'BUILDING_BARRACKS' OR BuildingType = 'BUILDING_STABLE' OR BuildingType = 'BUILDING_MILITARY_ACADEMY' OR BuildingType = 'BUILDING_BASILIKOI_PAIDES' OR BuildingType = 'BUILDING_ORDU') ;
 DELETE FROM BNP_Building_Yield WHERE YieldType = 'YIELD_FOOD' AND (BuildingType = 'BUILDING_LIGHTHOUSE' OR BuildingType = 'BUILDING_SEAPORT') ;
 DELETE FROM BNP_Building_Yield WHERE YieldType = 'YIELD_GOLD' AND (BuildingType = 'BUILDING_ARMORY' OR BuildingType = 'BUILDING_SHIPYARD') ;
-DELETE FROM BNP_District_Yield WHERE YieldType = 'YIELD_GOLD' AND (DistrictType = 'DISTRICT_ENCAMPMENT' OR DistrictType = 'DISTRICT_IKANDA' OR DistrictType = 'DISTRICT_HARBOR' OR DistrictType = 'DISTRICT_COTHON' OR DistrictType = 'DISTRICT_ROYAL_NAVY_DOCKYARD') ;
+DELETE FROM BNP_District_Yield WHERE YieldType = 'YIELD_GOLD' AND (DistrictType = 'DISTRICT_ENCAMPMENT' OR DistrictType = 'DISTRICT_IKANDA' OR DistrictType = 'DISTRICT_THANH' OR DistrictType = 'DISTRICT_HARBOR' OR DistrictType = 'DISTRICT_COTHON' OR DistrictType = 'DISTRICT_ROYAL_NAVY_DOCKYARD') ;
+
+-- Manual overrides
+UPDATE BNP_Building_Yield SET YieldType = 'YIELD_FOOD' WHERE BuildingType = 'BUILDING_GURDWARA' ;
+UPDATE BNP_Building_Yield SET YieldType = 'YIELD_PRODUCTION' WHERE BuildingType = 'BUILDING_SHIPYARD' OR BuildingType = 'BUILDING_MEETING_HOUSE' ;
+UPDATE BNP_Building_Yield SET YieldType = 'YIELD_CULTURE' WHERE BuildingType = 'BUILDING_CATHEDRAL' OR BuildingType = 'BUILDING_PAGODA' ;
+UPDATE BNP_Building_Yield SET YieldType = 'YIELD_SCIENCE' WHERE BuildingType = 'BUILDING_MILITARY_ACADEMY' OR BuildingType = 'BUILDING_WAT' ;
 
 
 -- Add a citizen slot to the base districts (e.g. without a library)

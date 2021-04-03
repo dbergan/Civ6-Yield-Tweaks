@@ -2,8 +2,9 @@ if not ExposedMembers.DB_YT then ExposedMembers.DB_YT = {} end
 local DB_YT = ExposedMembers.DB_YT
 
 
-function ProspectInformation(ActivePlayerID, ResearchItemID, SciOrCulture)		-- SciOrCulture = "S" or "C"
+function ProspectInformation(ActivePlayerID, ResearchItemID, SciOrCulture, TruncateOverflow)		-- SciOrCulture = "S" or "C"
 	if ActivePlayerID == -1 or Players == nil then return 0, "", 0 end
+	TruncateOverflow = TruncateOverflow or false
 
 	local ActivePlayer = Players[ActivePlayerID]
 	local ActivePlayerDiplomacy = ActivePlayer:GetDiplomacy()
@@ -26,13 +27,13 @@ function ProspectInformation(ActivePlayerID, ResearchItemID, SciOrCulture)		-- S
 		if OpponentID ~= ActivePlayerID then
 			if ActivePlayerDiplomacy:HasMet(OpponentID) then
 				if (SciOrCulture == "S" and Opponent:GetTechs():HasTech(ResearchItemID)) or (SciOrCulture == "C" and Opponent:GetCulture():HasCivic(ResearchItemID)) then
-					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = GetEncounterPoints(ActivePlayerID, OpponentID, SciOrCulture) }
+					local temp = { OpponentName = PlayerConfigurations[OpponentID]:GetCivilizationTypeName(), EncounterPoints = GetEncounterPoints(ActivePlayerID, OpponentID, 1, SciOrCulture) }
 					table.insert(Encounters, temp)
 				end
 			end
 		end
 	end
-	table.sort(Encounters, function(a,b) if a.EncounterPoints == b.EncounterPoints then return a.OpponentName > b.OpponentName else return a.EncounterPoints > b.EncounterPoints end end)
+	table.sort(Encounters, function(a,b) if a.EncounterPoints == b.EncounterPoints then return a.OpponentName < b.OpponentName else return a.EncounterPoints > b.EncounterPoints end end)
 
 	local Bonus = 0
 	local TotalBonus = 0
@@ -40,10 +41,12 @@ function ProspectInformation(ActivePlayerID, ResearchItemID, SciOrCulture)		-- S
 	for i, Encounter in ipairs(Encounters) do
 		local Bonus = CurrentYield * Encounter.EncounterPoints / 100
 		Bonus = Bonus * (0.5 ^ (i - 1))
-		if ProgLeft <= 0 then
-			Bonus = 0
-		elseif Bonus > ProgLeft then
-			Bonus = ProgLeft
+		if TruncateOverflow == true then
+			if ProgLeft <= 0 then
+				Bonus = 0
+			elseif Bonus > ProgLeft then
+				Bonus = ProgLeft + 0.01
+			end
 		end
 		TotalBonus = TotalBonus + Bonus
 		ProgLeft = ProgLeft - Bonus
@@ -59,12 +62,15 @@ function ProspectInformation(ActivePlayerID, ResearchItemID, SciOrCulture)		-- S
 		if Note ~= "" then
 			Note = Note .. "[NEWLINE]"
 		end
-		Note = Note .. "[ICON_Bullet]+" .. string.format("%.2f", Notif.Bonus) .. " from {LOC_" .. Notif.OpponentName .. "_NAME}"
+		Note = Note .. " [ICON_Bullet]+" .. string.format("%.2f", Notif.Bonus) .. " from {LOC_" .. Notif.OpponentName .. "_NAME}"
 	end
 
 	local Turns = 0
 	if (CurrentYield + TotalBonus) > 0 then
-		Turns = 1 + math.ceil(ProgLeft / (CurrentYield + TotalBonus))
+		Turns = math.ceil(ProgLeft / (CurrentYield + TotalBonus))
+		if Turns < 1 then
+			Turns = 1
+		end
 	end
 
 	return TotalBonus, Note, Turns
@@ -78,8 +84,8 @@ function GetBoosts(ActivePlayerID, ActiveTechID, ActiveCivicID, SendNotification
 	local ScienceNote = ""
 	local CultureNote = ""
 
-	ScienceBoost, ScienceNote = ProspectInformation(ActivePlayerID, ActiveTechID, "S")
-	CultureBoost, CultureNote = ProspectInformation(ActivePlayerID, ActiveCivicID, "C")
+	ScienceBoost, ScienceNote = ProspectInformation(ActivePlayerID, ActiveTechID, "S", true)
+	CultureBoost, CultureNote = ProspectInformation(ActivePlayerID, ActiveCivicID, "C", true)
 
 	if SendNotifications == true and ScienceNote ~= "" then
 		SendNotification(ActivePlayerID, "Learn From Other Civs", ScienceNote, "S")
@@ -112,13 +118,13 @@ function GetTechLeft(ActivePlayerID)
 end
 
 
-function GetEncounterPoints(ActivePlayerID, OpponentID, SciOrCulture)		-- SciOrCulture = "S" or "C"
+function GetEncounterPoints(ActivePlayerID, OpponentID, OpponentCount, SciOrCulture)		-- OpponentCount = 1 for full bonus, 2 for half, 3 for 0.25. etc   //   SciOrCulture = "S" or "C"
 -- EncounterPoints: a 0-200 scale assessing how much the opponent is sharing the details of this tech
 -- Each point means a +1% boost to our nation's science
 -- 0 means we haven't met them
 -- 200 means we're getting the max info from them (and our own tech is getting a +200% boost)
 
-	if ActivePlayerID == -1 or Players == nil then return 0, "" end
+	if ActivePlayerID == nil or ActivePlayerID == -1 or Players == nil then return 0, "" end
 
 	local ActivePlayer = Players[ActivePlayerID]
 	local ActivePlayerDiplomacy = ActivePlayer:GetDiplomacy()
@@ -157,7 +163,8 @@ function GetEncounterPoints(ActivePlayerID, OpponentID, SciOrCulture)		-- SciOrC
 		EncounterPoints = EncounterPoints + AlliancePoints
 	else
 		TooltipBreakdown = TooltipBreakdown .. "[NEWLINE][ICON_Bullet]+0% No Alliance"
-		if ActivePlayerDiplomacy:GetDeclaredFriendshipTurn(OpponentID) > 0 then
+		local DipState = Players[OpponentID]:GetDiplomaticAI():GetDiplomaticStateIndex(ActivePlayerID)
+		if GameInfo.DiplomaticStates[DipState].StateType == "DIPLO_STATE_DECLARED_FRIEND" then
 			EncounterPoints = EncounterPoints + 10													-- 10 points for declared friendship (if not in an alliance)
 			TooltipBreakdown = TooltipBreakdown .. "[NEWLINE][ICON_Bullet]+10% Declared Friendship"
 		else
@@ -182,6 +189,14 @@ function GetEncounterPoints(ActivePlayerID, OpponentID, SciOrCulture)		-- SciOrC
 			TooltipBreakdown = TooltipBreakdown .. "[NEWLINE][ICON_Bullet]+0% No Joint War"
 		end
 	end
+
+	if OpponentCount > 1 then
+		local RedundantDiff = EncounterPoints
+		EncounterPoints = EncounterPoints * (0.5 ^ (OpponentCount - 1))
+		RedundantDiff = RedundantDiff - EncounterPoints
+		TooltipBreakdown = TooltipBreakdown .. "[NEWLINE][ICON_Bullet]-" .. string.format("%.0f", RedundantDiff) .. "% Redundant Information"
+	end
+
 	TooltipBreakdown = "[NEWLINE]+" .. tostring(EncounterPoints) .. "% bonus to our research" .. TooltipBreakdown
 
 	return EncounterPoints, TooltipBreakdown
@@ -198,6 +213,73 @@ function SendNotification(ActivePlayerID, Header, Body, SciOrCulture)		-- SciOrC
 		NotificationManager.SendNotification(ActivePlayerID, NotificationTypes.USER_DEFINED_8, notificationData)
 	elseif SciOrCulture == "C" then
 		NotificationManager.SendNotification(ActivePlayerID, NotificationTypes.USER_DEFINED_9, notificationData)
+	end
+end
+
+function PlaceLeaderIcons(LeaderIconIM, NameStack, ListInstance, TechOrCivicType, TechOrCivicID, SciOrCulture, OffsetX, OffsetY)
+	if LeaderIconIM[TechOrCivicType] == nil then
+		LeaderIconIM[TechOrCivicType] = InstanceManager:new("YT_LFOC_LeaderIconInstance", "Icon", NameStack)
+	end
+	LeaderIconIM[TechOrCivicType]:ResetInstances()
+
+	if not GameConfiguration.GetValue("YT_LEARN_FROM_OTHER_CIVS") then return end
+
+	local LocalPlayerID = Game.GetLocalPlayer()
+	local AllPlayers = PlayerManager.GetAliveMajors()
+	local Encounters = {}
+	for _, Player in pairs(AllPlayers) do
+		local PlayerID = Player:GetID()
+		local IsNotLocalPlayer = PlayerID ~= LocalPlayerID
+		local HasMet = Player:GetDiplomacy():HasMet(LocalPlayerID)
+		local HasIt = false
+		if SciOrCulture == 'S' then
+			HasIt = Player:GetTechs():HasTech(TechOrCivicID)
+		else
+			HasIt = Player:GetCulture():HasCivic(TechOrCivicID)
+		end
+		
+		if IsNotLocalPlayer and HasMet and HasIt then
+			local temp = { PlayerID = PlayerID, OpponentName = PlayerConfigurations[PlayerID]:GetCivilizationTypeName() }
+			temp.EncounterPoints = GetEncounterPoints(LocalPlayerID, PlayerID, 1, SciOrCulture)
+			table.insert(Encounters, temp)
+		end
+		table.sort(Encounters, function(a,b) if a.EncounterPoints == nil or a.EncounterPoints == b.EncounterPoints then return a.OpponentName < b.OpponentName else return a.EncounterPoints > b.EncounterPoints end end)
+	end
+
+
+	for i, Encounter in ipairs(Encounters) do
+		local pPlayerConfig = PlayerConfigurations[Encounter.PlayerID]
+		local instance = LeaderIconIM[TechOrCivicType]:GetInstance()
+		local iconName = "ICON_" .. pPlayerConfig:GetLeaderTypeName()
+		local textureOffsetX, textureOffsetY, textureSheet = IconManager:FindIconAtlas(iconName)
+		instance.Icon:SetTexture(textureOffsetX, textureOffsetY, textureSheet)
+		local ToolTip = ""
+		_, ToolTip = GetEncounterPoints(LocalPlayerID, Encounter.PlayerID, i, SciOrCulture)
+		ToolTip = "Already learned by " .. Locale.Lookup("LOC_" .. pPlayerConfig:GetCivilizationTypeName() .. "_NAME") .. ToolTip
+
+		instance.Icon:SetToolTipString(ToolTip)
+		instance.Icon:SetOffsetVal(OffsetX, OffsetY)
+		instance.Icon:SetHide(false)
+
+	end	
+	
+	local Turns = 0
+	_, _, Turns = ProspectInformation(LocalPlayerID, TechOrCivicID, SciOrCulture)
+
+	if ListInstance.TurnsLeft ~= nil then
+		if Turns <= 0 then
+			ListInstance.TurnsLeft:SetText("")
+		else
+			ListInstance.TurnsLeft:SetText( "[ICON_Turn]" .. tostring(Turns) )
+		end
+	end
+
+	if ListInstance.Turns ~= nil then
+		if Turns <= 0 then
+			ListInstance.Turns:SetText("")
+		else
+			ListInstance.Turns:SetText(tostring(Turns) .. " TURNS")
+		end
 	end
 end
 

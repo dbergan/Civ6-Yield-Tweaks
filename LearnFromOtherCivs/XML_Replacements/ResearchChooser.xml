@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Context>
-<!-- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\DLC\Expansion2\UI\Replacements\ResearchChooser.xml -->
+<!-- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\Base\Assets\UI\Choosers\ResearchChooser.xml -->
 <!-- DB -->
 	<Include File="YT_LFOC_LeaderIcon" />
 <!-- /DB -->
 
-	<SlideAnim Style="ChooserAnim" >
-		<Button ID="CloseButton" Offset="265,2" Style="CloseButtonSmall" />
+	<SlideAnim																																										Style="ChooserAnim" >
+		<Button					ID="CloseButton"															Offset="265,2"								Style="CloseButtonSmall" />
 
-		<Grid ID="MainPanel" Offset="-5,27"	Size="296,95" Texture="ResearchPanel_Frame" SliceCorner="80,80" SliceSize="1,1" SliceTextureSize="110,88" ConsumeMouseOver="1">
+		<Grid						ID="MainPanel"																Offset="-5,27"	Size="296,95"	Texture="ResearchPanel_Frame" SliceCorner="80,80" SliceSize="1,1" SliceTextureSize="110,88" ConsumeMouseOver="1">
 			<FlipAnim			ID="MainGearAnim"																														Texture="ResearchPanel_MeterFrameAnim" FrameCount="3" Columns="3" Speed="10" Size="40,40" Stopped="1" />
 			<Stack ID="TitleStack" Offset="65,8" StackGrowth="Right" StackPadding="4">
 				<TextButton		ID="TitleButton"			Size="200,40"	Style="PanelHeaderText" String="$ChangeResearch$" />
@@ -32,11 +32,6 @@
 			<Button   ID="UnlockPageTurner"   Anchor="R,B"   Offset="18, 28"  Size ="19,23" Hidden="1" >
 				<Image  ID="PageTurnerImage"    Anchor="C,C"   Offset="0,0"     Size="parent,parent"  Texture="Controls_ArrowButtonRight" FlipX="false"/>
 			</Button>
-<!-- DB -->
-			<GridButton ID="Alliance" Anchor="L,T" Offset="0,0" Size="25,25" NoStateChange="1" Hidden="1">
-<!-- /DB -->
-				<Image ID="AllianceIcon" Anchor="C,C" Size="23,23" Texture="Diplomacy_RelationshipPips" Icon="ICON_RELATIONSHIP_SUZERAIN"/>
-			</GridButton>
 
 			<Tutorial  ID="TutSelectCityResearch" Style="TutorialContainer" Anchor="R,T" AnchorSide="O,I" Offset="20,350" TriggerBy="TutorialSelectResearch"  >
 				<Grid Style="TutorialCalloutGrid">
@@ -74,7 +69,7 @@
 					<Label Style="TutorialBodyText" String="LOC_META_SELECT_IRRIGATION" />
 				</Grid>
 				<SlideAnim Start="10,0" End="0,0" Cycle="Bounce" Speed="1.2" Function="OutSine" EndPause=".4" Size="auto,auto">
-					<Image Texture="Tutorial_ArrowH" AnchorSide="O,I" Offset="-30,5" Size="59,44" FlipX="1"/>
+					<Image Texture="Tutorial_ArrowH" AnchorSide="O,I" Offset="-30,-3" Size="59,44" FlipX="1"/>
 				</SlideAnim>
 			</Tutorial>
 
@@ -105,7 +100,7 @@
 <!-- DB -->
 				<Stack ID="DB_NameStack" Anchor="L,T" Offset="48,5" StackGrowth="Right" StackPadding="4">
 <!-- /DB -->
-				<Label			ID="TechName"					Style="FontNormal14" FontStyle="Stroke" ColorSet="BodyTextCool" Color1="0,0,0,100"/>
+					<Label			ID="TechName"					Style="FontNormal14" FontStyle="Stroke" ColorSet="BodyTextCool" Color1="0,0,0,100"/>
 					<Image      ID="RecommendedIcon"  Offset="0,-4" Size="22,22" Texture="AdvisorRec22" ConsumeMouse="1" ToolTip="LOC_TECH_FILTER_RECOMMENDED" Hidden="1">
 						<FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
 					</Image>
@@ -118,11 +113,6 @@
 					<Image  ID="PageTurnerImage"    Anchor="C,C"   Offset="0,0"     Size="parent,parent"  Texture="Controls_ArrowButtonRight" FlipX="false"/>
 				</Button>
 			</GridButton>
-<!-- DB -->
-			<GridButton ID="Alliance" Anchor="L,T" Offset="-11,21" Size="25,25" NoStateChange="1" Hidden="1">
-<!-- /DB -->
-				<Image ID="AllianceIcon" Anchor="C,C" Size="23,23" Texture="Diplomacy_RelationshipPips" Icon="ICON_RELATIONSHIP_SUZERAIN"/>
-			</GridButton>
 		</Container>
 	</Instance>
 
@@ -133,6 +123,3 @@
 	</Instance>
 
 </Context>
-
-
-

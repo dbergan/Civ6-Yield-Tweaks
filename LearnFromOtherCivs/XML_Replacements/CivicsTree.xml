@@ -217,7 +217,7 @@
 				<Grid ID="BoostedBack" Offset="7,6" Anchor="L,B" Size="406,39" Texture="Controls_BoostSlotCivic" SliceCorner="28,26" SliceSize="1,1" SliceTextureSize="39,39"/>
 				<Image ID="BoostIcon" Offset="9,7" Anchor="L,B" Texture="BoostTech"/>
 				<Label ID="BoostText" Offset="47,7" Anchor="L,B" Style="TreeBoostText" String="?BoostText"/>
-<!-- DB -->
+<!-- DB - Add ID [YT_LFOC] -->
 				<Stack ID="DB_NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4">
 <!-- /DB -->
 					<Label ID="NodeName" Style="TreeNodeText" String="?NodeName" TruncateWidth="260"/>
@@ -247,7 +247,9 @@
 				<Grid ID="BoostedBack" Offset="7,6" Anchor="L,B" Size="406,39" Texture="Controls_BoostSlotCivic" SliceCorner="28,26" SliceSize="1,1" SliceTextureSize="39,39"/>
 				<Image ID="BoostIcon" Offset="10,7" Anchor="L,B" Texture="BoostTech"/>
 				<Label ID="BoostText" Offset="42,7" Anchor="L,B" Style="TreeBoostText" String="?BoostText"/>
-				<Stack Offset="68,8" StackGrowth="Right" StackPadding="4">
+<!-- DB - Add ID [YT_LFOC] -->
+				<Stack ID="DB_NameStack" Offset="68,8" StackGrowth="Right" StackPadding="4">
+<!-- /DB -->
 					<Label ID="NodeName" Style="TreeNodeText" String="?NodeName"/>
 					<Image ID="RecommendedIcon" Offset="0,-8" Size="22,22" Texture="AdvisorRec22" ConsumeMouse="1" ToolTip="LOC_TECH_FILTER_RECOMMENDED">
 						<FlipAnim Texture="AdvisorRecAnim22" Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
