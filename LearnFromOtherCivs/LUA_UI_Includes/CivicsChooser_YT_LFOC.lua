@@ -504,7 +504,7 @@ YT_RealizeCurrentCivic_LeaderIconIM = {}
 
 PRIOR_AddAvailableCivic = AddAvailableCivic
 function AddAvailableCivic( playerID:number, kData:table )
-print('DBTEST', 'AddAvailableCivic')
+-- print('DBTEST', 'AddAvailableCivic')
 	ListInstance = PRIOR_AddAvailableCivic(playerID, kData)
 	if kData == nil or kData.CivicType == nil or ListInstance == nil then return ListInstance end
 
@@ -519,7 +519,7 @@ end
 
 PRIOR_RealizeCurrentCivic = RealizeCurrentCivic
 function RealizeCurrentCivic(playerID, kData, kControl, cachedModifiers)
-print('DBTEST', 'RealizeCurrentCivic')
+-- print('DBTEST', 'RealizeCurrentCivic')
 	if kControl == nil then
 		kControl = Controls
 	end
@@ -538,7 +538,7 @@ print('DBTEST', 'RealizeCurrentCivic')
 end
 
 function ResetCivicLeaderIcons()
-print('DBTEST', '', 'ResetCivicLeaderIcons')
+-- print('DBTEST', '', 'ResetCivicLeaderIcons')
 	if YT_AddAvailableCivic_LeaderIconIM ~= nil then
 		for _, v in pairs(YT_AddAvailableCivic_LeaderIconIM) do
 			v:ResetInstances()
@@ -559,20 +559,20 @@ end
 
 PRIOR_OnChooseCivic = OnChooseCivic
 function OnChooseCivic(civicHash:number)
-print('DBTEST', 'OnChooseCivic')
+-- print('DBTEST', 'OnChooseCivic')
 	ResetCivicLeaderIcons()
 	PRIOR_OnChooseCivic(civicHash)
 end
 
 PRIOR_OnOpenPanel = OnOpenPanel
 function OnOpenPanel ()
-print('DBTEST', 'OnOpenPanel')
+-- print('DBTEST', 'OnOpenPanel')
 	ResetCivicLeaderIcons()
 	PRIOR_OnOpenPanel()
 end
 
 function FlushChanges()
-print('DBTEST', 'FlushChanges')
+-- print('DBTEST', 'FlushChanges')
 	if ContextPtr:IsVisible() then
 		Refresh();	
 	end

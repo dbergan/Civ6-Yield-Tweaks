@@ -5,7 +5,7 @@
     <Name>DB [ICON_Science]Yield Tweaks[ICON_Culture]</Name>
     <Guid>f6c04df3-a1c1-4c63-acc6-605f4c8943eb</Guid>
     <ProjectGuid>0d8fd934-1eba-4517-a6be-a1a239af9cc2</ProjectGuid>
-    <ModVersion>8</ModVersion>
+    <ModVersion>10</ModVersion>
     <Teaser>Balance is returned to the yields</Teaser>
     <Description>A collection of tweaks to balance yields, districts, and buildings. Each item can be disabled or adjusted in the game setup screen:[NEWLINE][ICON_Bullet]Science/Culture Yields Per Population[NEWLINE][ICON_Bullet]Learn From Other Civs[NEWLINE][ICON_Bullet]People Create, Not Empty Buildings[NEWLINE][ICON_Bullet]Great People Come From People[NEWLINE][ICON_Bullet]Remove Civic/Tech Boosts[NEWLINE][ICON_Bullet]Monuments: No Culture[NEWLINE][ICON_Bullet]Theater Squares: Better Adjacencies[NEWLINE][ICON_Bullet]Gold From Tourism[NEWLINE][ICON_Bullet]Great Merchants are Merchants</Description>
     <Authors>DB</Authors>
