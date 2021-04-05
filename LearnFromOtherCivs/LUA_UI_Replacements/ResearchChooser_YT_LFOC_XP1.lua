@@ -1,6 +1,6 @@
 include('ResearchChooser_Expansion1')
 
--- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\DLC\Expansion2\UI\Replacements\ResearchChooser_Expansion1.lua
+-- G:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\DLC\Expansion2\UI\Replacements\ResearchChooser_Expansion1.lua  [line 48]
 function AddAvailableResearch( playerID:number, kData:table )
 	local kControl = BASE_AddAvailableResearch(playerID, kData);
 

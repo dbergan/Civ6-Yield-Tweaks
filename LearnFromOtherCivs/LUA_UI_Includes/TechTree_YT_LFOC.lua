@@ -2,7 +2,7 @@
 -- local DB_YT = ExposedMembers.DB_YT
 
 include('YT_LearnFromOtherCivs_UI')
-local YT_LeaderIconIM = {}
+YT_TechPopulateNode_LeaderIconIM = {}
 
 PRIOR_PopulateNode = PopulateNode
 function PopulateNode(uiNode, playerTechData)
@@ -11,7 +11,7 @@ function PopulateNode(uiNode, playerTechData)
 	-- skip unrevealed nodes
 	if not playerTechData[DATA_FIELD_LIVEDATA][uiNode.Type].IsRevealed then return end
 
-	PlaceLeaderIcons(YT_LeaderIconIM, uiNode.DB_NameStack, uiNode, uiNode.Type, GameInfo.Technologies[uiNode.Type].Index, "S", -5, -25)
+	PlaceLeaderIcons(YT_TechPopulateNode_LeaderIconIM, uiNode.DB_NameStack, uiNode, uiNode.Type, GameInfo.Technologies[uiNode.Type].Index, "S", -5, -25)
 end
 
 -- DB - remove the tech filter when playing in the random tech tree mode [ALL]

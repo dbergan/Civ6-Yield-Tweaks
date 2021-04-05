@@ -499,21 +499,27 @@ Initialize();
 -- if not ExposedMembers.DB_YT then ExposedMembers.DB_YT = {} end
 -- local DB_YT = ExposedMembers.DB_YT
 include('YT_LearnFromOtherCivs_UI')
-local YT_LeaderIconIM = {}
-local YT_LeaderIconIM2 = {}
+YT_AddAvailableCivic_LeaderIconIM = {}
+YT_RealizeCurrentCivic_LeaderIconIM = {}
 
 PRIOR_AddAvailableCivic = AddAvailableCivic
 function AddAvailableCivic( playerID:number, kData:table )
+print('DBTEST', 'AddAvailableCivic')
 	ListInstance = PRIOR_AddAvailableCivic(playerID, kData)
 	if kData == nil or kData.CivicType == nil or ListInstance == nil then return ListInstance end
 
-	PlaceLeaderIcons(YT_LeaderIconIM, ListInstance.DB_NameStack, ListInstance, kData.CivicType, GameInfo.Civics[kData.CivicType].Index, "C", -5, -30)
+	if YT_AddAvailableCivic_LeaderIconIM[kData.CivicType] ~= nil then
+		YT_AddAvailableCivic_LeaderIconIM[kData.CivicType]:ResetInstances()
+		YT_AddAvailableCivic_LeaderIconIM[kData.CivicType] = nil
+	end
+	PlaceLeaderIcons(YT_AddAvailableCivic_LeaderIconIM, ListInstance.DB_NameStack, ListInstance, kData.CivicType, GameInfo.Civics[kData.CivicType].Index, "C", -5, -30)
 
 	return ListInstance
 end
 
 PRIOR_RealizeCurrentCivic = RealizeCurrentCivic
 function RealizeCurrentCivic(playerID, kData, kControl, cachedModifiers)
+print('DBTEST', 'RealizeCurrentCivic')
 	if kControl == nil then
 		kControl = Controls
 	end
@@ -522,25 +528,51 @@ function RealizeCurrentCivic(playerID, kData, kControl, cachedModifiers)
 
 	if kData == nil or kData.CivicType == nil then return end
 
-	for _, v in pairs(YT_LeaderIconIM2) do
-		v:ResetInstances()
+	if YT_RealizeCurrentCivic_LeaderIconIM ~= nil then
+		for _, v in pairs(YT_RealizeCurrentCivic_LeaderIconIM) do
+			v:ResetInstances()
+			v = nil
+		end
 	end
-	PlaceLeaderIcons(YT_LeaderIconIM2, kControl.TitleStack, kControl, kData.CivicType, GameInfo.Civics[kData.CivicType].Index, "C", -5, -15)
+	PlaceLeaderIcons(YT_RealizeCurrentCivic_LeaderIconIM, kControl.TitleStack, kControl, kData.CivicType, GameInfo.Civics[kData.CivicType].Index, "C", -5, -15)
+end
+
+function ResetCivicLeaderIcons()
+print('DBTEST', '', 'ResetCivicLeaderIcons')
+	if YT_AddAvailableCivic_LeaderIconIM ~= nil then
+		for _, v in pairs(YT_AddAvailableCivic_LeaderIconIM) do
+			v:ResetInstances()
+			v = nil
+		end
+		YT_AddAvailableCivic_LeaderIconIM = nil
+		YT_AddAvailableCivic_LeaderIconIM = {}
+	end
+	if YT_RealizeCurrentCivic_LeaderIconIM ~= nil then
+		for _, v in pairs(YT_RealizeCurrentCivic_LeaderIconIM) do
+			v:ResetInstances()
+			v = nil
+		end
+		YT_RealizeCurrentCivic_LeaderIconIM = nil
+		YT_RealizeCurrentCivic_LeaderIconIM = {}
+	end
 end
 
 PRIOR_OnChooseCivic = OnChooseCivic
 function OnChooseCivic(civicHash:number)
-	for _, v in pairs(YT_LeaderIconIM) do
-		v:ResetInstances()
-	end
-	for _, v in pairs(YT_LeaderIconIM2) do
-		v:ResetInstances()
-	end
-
+print('DBTEST', 'OnChooseCivic')
+	ResetCivicLeaderIcons()
 	PRIOR_OnChooseCivic(civicHash)
 end
 
+PRIOR_OnOpenPanel = OnOpenPanel
+function OnOpenPanel ()
+print('DBTEST', 'OnOpenPanel')
+	ResetCivicLeaderIcons()
+	PRIOR_OnOpenPanel()
+end
+
 function FlushChanges()
+print('DBTEST', 'FlushChanges')
 	if ContextPtr:IsVisible() then
 		Refresh();	
 	end
